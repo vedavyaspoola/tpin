@@ -16,10 +16,15 @@ public class TpinServiceImpl implements TpinService {
 	private TpinRepository tpinRepository;
 
 	@Override
-	public Boolean createTpinInfo(Tpin tpinRequest) {
+	public String createTpinInfo(Tpin tpinRequest) {
 
 		TpinDbo tpinBo = new TpinDbo();
 		TpinDbo result = null;
+		
+		TpinDbo pinDbo=tpinRepository.findBymobileNumber(tpinRequest.getMobileNumber());
+		if(pinDbo!=null)
+			return "";
+		
 		if (tpinRequest != null) {
 			tpinBo.setMobileNumber(tpinRequest.getMobileNumber());
 
@@ -35,10 +40,26 @@ public class TpinServiceImpl implements TpinService {
 
 		}
 		if (result != null) {
-			return true;
+			return "";
 		} else {
-			return false;
+			return null;
 		}
+	}
+
+	@Override
+	public Boolean validateTpin(String tpin) {
+		TpinDbo pinDbo=tpinRepository.findBytpin(tpin);
+		if(pinDbo!=null)
+			return true;
+		else
+			return false;
+	
+	}
+
+	@Override
+	public Boolean updateTpin(String tpin) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -4,5 +4,9 @@ import com.cts.tpin.transport.Tpin;
 
 public interface TpinService {
 	
-	Boolean createTpinInfo(Tpin tpinRequest);
+	String createTpinInfo(Tpin tpinRequest);
+
+	Boolean validateTpin(String tpin);
+
+	Boolean updateTpin(String tpin);
 }

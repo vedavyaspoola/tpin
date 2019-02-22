@@ -3,9 +3,9 @@ package com.cts.tpin.transport;
 public class Tpin {
 
 	private String mobileNumber;
-	private String Tpin;
-	private String Email;
-	private String Comments;
+	private String tpin;
+	private String email;
+	private String comments;
 	
 	
 	public String getMobileNumber() {
@@ -15,22 +15,22 @@ public class Tpin {
 		this.mobileNumber = mobileNumber;
 	}
 	public String getTpin() {
-		return Tpin;
+		return tpin;
 	}
 	public void setTpin(String tpin) {
-		Tpin = tpin;
+		this.tpin = tpin;
 	}
 	public String getEmail() {
-		return Email;
+		return email;
 	}
 	public void setEmail(String email) {
-		Email = email;
+		this.email = email;
 	}
 	public String getComments() {
-		return Comments;
+		return comments;
 	}
 	public void setComments(String comments) {
-		Comments = comments;
+		this.comments = comments;
 	}
 	
 	
