@@ -1,20 +1,19 @@
 package com.cts.tpin.controller;
 
-import javax.validation.executable.ValidateOnExecution;
-import javax.websocket.server.PathParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cts.tpin.dbo.TpinDbo;
 import com.cts.tpin.repository.TpinRepository;
 import com.cts.tpin.service.TpinService;
 import com.cts.tpin.transport.Tpin;
+
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/tpin")
@@ -22,62 +21,47 @@ public class TpinController {
 
 	@Autowired
 	private TpinService tpinService;
-	
+
 	@Autowired
 	private TpinRepository tpinRepository;
-	
 
+	@ApiOperation(value = "Create Tpin", response = Iterable.class)
 	@RequestMapping(value = "/create", method = RequestMethod.POST)
-	@ValidateOnExecution 
-	public String create(@RequestBody Tpin tpinRequest) {
+	public ResponseEntity<String> create(@RequestBody Tpin tpinRequest) {
 
-		StringBuffer sb = new StringBuffer();
-		String status = null;
-		if(tpinRequest != null && tpinRequest.getEmail() != null) {
-
-		}else {
-			sb.append("Email is Empty..");
+		Boolean response = tpinService.createTpinInfo(tpinRequest);
+		if (!response) {
+			return new ResponseEntity<String>("User aready exists", HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<String>("Successfuy Saved", HttpStatus.OK);
 		}
-		//check for tpin 
-
-
-		/*if(tpinRequest.getMobileNumber() != null) {
-			tpinRequest.setComments(sb.toString());
-			status = tpinService.createTpinInfo(tpinRequest);
-			
-		}*/
-		return sb.toString();
 
 	}
 
+	@ApiOperation(value = "Validate Tpin", response = Iterable.class)
 	@RequestMapping(value = "/validate/{tpin}", method = RequestMethod.GET)
-	public Boolean validateTpin(@PathVariable("tpin") String tpin) {
+	public ResponseEntity<String> validateTpin(@PathVariable("tpin") String tpin) {
 
-
-		Boolean status=tpinService.validateTpin(tpin);
-
-		return status;
-
-	}
-	@RequestMapping(value = "/update/{tpin}", method = RequestMethod.PUT)
-	public Boolean updateTpin(@RequestBody Tpin tpin) {
-       
-		
-			
-       TpinDbo tpinfromdb = tpinRepository.findBymobileNumber(tpin.getMobileNumber());
-       if(tpin.getMobileNumber() != null && tpin.getTpin()!= null)
-		{
-			tpinfromdb.setTpin(tpin.getTpin());
+		Boolean response = tpinService.validateTpin(tpin);
+		if (!response) {
+			return new ResponseEntity<String>("User Not exists", HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<String>("Given MobileNumber or Tpin Validaed", HttpStatus.OK);
 		}
-       //check null condiions and set the object values from ui to tpinfromdb
-       
-		TpinDbo status = tpinRepository.save(tpinfromdb);
-
-		return status;
 
 	}
 
+	@ApiOperation(value = "Update Tpin", response = Iterable.class)
+	@RequestMapping(value = "/update/{mobieNo}", method = RequestMethod.PUT)
+	public ResponseEntity<String> updateTpin(@RequestBody Tpin tpin, @PathVariable("mobieNo") String mobieNo) {
 
+		Boolean response = tpinService.updateTpin(mobieNo, tpin);
 
+		if (!response) {
+			return new ResponseEntity<String>("User Not exists", HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<String>("Record Updaed Successfully", HttpStatus.OK);
+		}
+	}
 
 }

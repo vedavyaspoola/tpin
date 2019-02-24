@@ -2,6 +2,7 @@ package com.cts.tpin.service;
 
 import java.sql.Timestamp;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +17,15 @@ public class TpinServiceImpl implements TpinService {
 	private TpinRepository tpinRepository;
 
 	@Override
-	public String createTpinInfo(Tpin tpinRequest) {
+	public Boolean createTpinInfo(Tpin tpinRequest) {
 
 		TpinDbo tpinBo = new TpinDbo();
 		TpinDbo result = null;
-		
-		TpinDbo pinDbo=tpinRepository.findBymobileNumber(tpinRequest.getMobileNumber());
-		if(pinDbo!=null)
-			return "";
-		
+
+		TpinDbo pinDbo = tpinRepository.findBymobileNumber(tpinRequest.getMobileNumber());
+		if (pinDbo != null)
+			return false;
+
 		if (tpinRequest != null) {
 			tpinBo.setMobileNumber(tpinRequest.getMobileNumber());
 
@@ -40,26 +41,42 @@ public class TpinServiceImpl implements TpinService {
 
 		}
 		if (result != null) {
-			return "";
+			return true;
 		} else {
-			return null;
+			return false;
 		}
 	}
 
 	@Override
 	public Boolean validateTpin(String tpin) {
-		TpinDbo pinDbo=tpinRepository.findBytpin(tpin);
-		if(pinDbo!=null)
+		TpinDbo pinDbo = tpinRepository.findBytpin(tpin);
+		if (pinDbo != null)
 			return true;
 		else
 			return false;
-	
+
 	}
 
 	@Override
-	public Boolean updateTpin(String tpin) {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean updateTpin(String mobileNo, Tpin tpin) {
+		TpinDbo tpinfromdb = tpinRepository.findBymobileNumber(mobileNo);
+		if (null == tpinfromdb) {
+			return false;
+
+		}
+
+		tpin.setMobileNumber(mobileNo);
+
+		BeanUtils.copyProperties(tpin, tpinfromdb);
+
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		tpinfromdb.setStartDate(timestamp);
+		TpinDbo response = tpinRepository.save(tpinfromdb);
+		if (response != null)
+			return true;
+		else
+
+			return false;
 	}
 
 }

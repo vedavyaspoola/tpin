@@ -13,18 +13,20 @@ import org.springframework.stereotype.Component;
 public class TpinDbo {
 	
 	@Id
+	@Column(name="Mobile_Number")
 	private String mobileNumber;
 	
-	@Column
+	@Column(name="Email")
 	private String email;
 	
-	@Column
+	
+	@Column(name="Tpin")
 	private String tpin;
 	
-	@Column
+	@Column(name="Comments")
 	private String Comments;
 	
-	@Column
+	@Column(name="TimeStamp")
 	private Timestamp startDate;
 
 	public String getMobileNumber() {
@@ -65,6 +67,12 @@ public class TpinDbo {
 
 	public void setStartDate(Timestamp startDate) {
 		this.startDate = startDate;
+	}
+
+	@Override
+	public String toString() {
+		return "TpinDbo [mobileNumber=" + mobileNumber + ", email=" + email + ", tpin=" + tpin + ", Comments="
+				+ Comments + ", startDate=" + startDate + "]";
 	}
 	
 	
